@@ -97,4 +97,11 @@ function renderTable() {
 window.onload = function() {
   // Tabelle wird erst nach Login gezeigt
   document.getElementById("voteTable").style.display = "none";
+  function renderTable() {
+  // ... bisheriger Code ...
+
+  document.getElementById("voteTable").style.display = "table";
+}
+
 };
+
