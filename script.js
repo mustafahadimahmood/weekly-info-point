@@ -1,6 +1,6 @@
 const participants = ["Christa","Ruben","Mustafa","Theo","Cordula","Neli"];
-const adminPassword = "Wks07072023"; // Passwort für Mustafa
-let isAdmin = Mustafa;
+const adminPassword = "Wks07072023"; // neues Passwort für Mustafa
+let isAdmin = false;
 let currentUser = "";
 
 // Admin Login
@@ -59,8 +59,9 @@ function renderTable(){
         select.appendChild(opt);
       });
 
+      // Nur eigene Spalte aktiv, Admin alles
       if(!isAdmin && p !== currentUser){
-        select.disabled = true; // nur eigene Spalte aktiv
+        select.disabled = true;
       }
 
       td.appendChild(select);
