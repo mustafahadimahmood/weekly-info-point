@@ -1,12 +1,9 @@
-// Teilnehmerliste
 const participants = ["Christa","Ruben","Mustafa","Theo","Cordula","Neli"];
 const adminName = "Mustafa";
-const adminPassword = "admin123"; // Passwort für Mustafa
-
+const adminPassword = "Wks07072023"; // Mustafa Passwort
 let isAdmin = false;
-let currentUser = "";
 
-// Admin Login
+// Login als Admin
 function loginAdmin() {
   const pass = document.getElementById("adminPass").value;
   if(pass === adminPassword){
@@ -18,16 +15,6 @@ function loginAdmin() {
   }
 }
 
-// Benutzer setzen
-function setUser(name) {
-  if(participants.includes(name)){
-    currentUser = name;
-    renderTable();
-  } else {
-    alert("Name nicht in der Liste!");
-  }
-}
-
 // Nächster Mittwoch
 function getNextWednesday(date = new Date()) {
   const nextWed = new Date(date);
@@ -35,12 +22,10 @@ function getNextWednesday(date = new Date()) {
   return nextWed.toISOString().split('T')[0];
 }
 
-// Tabelle rendern
+// Render Tabelle
 function renderTable(){
   const tbody = document.querySelector("#voteTable tbody");
   tbody.innerHTML = "";
-
-  if(!currentUser && !isAdmin) return; // Benutzer nicht gesetzt
 
   const today = new Date();
   for(let i=0;i<10;i++){ // 10 Wochen anzeigen
@@ -54,14 +39,17 @@ function renderTable(){
     participants.forEach(p => {
       const td = document.createElement("td");
       const select = document.createElement("select");
+
       ["", "Ja", "Nein", "Vielleicht"].forEach(o=>{
         const opt = document.createElement("option");
-        opt.value = o; opt.text = o;
+        opt.value = o;
+        opt.text = o;
         select.appendChild(opt);
       });
 
-      // Berechtigungen: nur eigene Spalte bearbeiten, außer Admin
-      if(!isAdmin && p !== currentUser){
+      // Wenn kein Admin und nicht eigene Spalte → deaktivieren
+      const username = prompt("Gib deinen Namen ein:"); // einfacher Name-Check
+      if(!isAdmin && p !== username){
         select.disabled = true;
       }
 
@@ -73,8 +61,5 @@ function renderTable(){
   }
 }
 
-// Benutzername setzen über Prompt beim Laden
-window.onload = function() {
-  let name = prompt("Gib deinen Namen ein:");
-  setUser(name);
-}
+// Tabelle initial rendern
+renderTable();
