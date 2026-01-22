@@ -1,7 +1,7 @@
-const participants = ["Christa","Ruben","Mustafa","Theo","Cordula","Neli"];
-const adminPassword = "Wks07072023"; // Passwort für Mustafa
-let isAdmin = false;
 let currentUser = "";
+let isAdmin = Mustafa;
+const adminPassword = "Wks07072023"; // Passwort für Mustafa
+let votes = []; // Liste der Einträge
 
 // Admin Login
 function loginAdmin() {
@@ -15,25 +15,22 @@ function loginAdmin() {
   }
 }
 
-// Benutzer setzen
+// Benutzername setzen
 function setUser() {
   const nameInput = document.getElementById("userName").value.trim();
-  if(participants.includes(nameInput)){
-    currentUser = nameInput;
-    renderTable();
-  } else {
-    alert("Name nicht in der Liste!");
-  }
+  if(nameInput === "") { alert("Gib einen Namen ein!"); return; }
+  currentUser = nameInput;
+  renderTable();
 }
 
 // Nächster Mittwoch
 function getNextWednesday(date = new Date()) {
   const nextWed = new Date(date);
   nextWed.setDate(date.getDate() + ((3 - date.getDay() + 7) % 7 || 7));
-  return nextWed;
+  return nextWed.toISOString().split('T')[0];
 }
 
-// Tabelle rendern (52 Wochen)
+// Tabelle rendern
 function renderTable(){
   const tbody = document.querySelector("#voteTable tbody");
   tbody.innerHTML = "";
@@ -41,41 +38,29 @@ function renderTable(){
   if(!currentUser && !isAdmin) return;
 
   const today = new Date();
-  let date = getNextWednesday(today);
-
-  for(let i=0;i<52;i++){ // 52 Wochen
+  for(let i=0;i<10;i++){
+    const date = getNextWednesday(new Date(today.getTime() + i*7*24*60*60*1000));
     const tr = document.createElement("tr");
 
     const tdDate = document.createElement("td");
-    tdDate.textContent = date.toISOString().split('T')[0];
+    tdDate.textContent = date;
     tr.appendChild(tdDate);
 
-    participants.forEach(p => {
-      const td = document.createElement("td");
-      const select = document.createElement("select");
-      ["", "Ja", "Nein", "Vielleicht"].forEach(o=>{
-        const opt = document.createElement("option");
-        opt.value = o; opt.text = o;
-        select.appendChild(opt);
-      });
+    const tdUser = document.createElement("td");
+    tdUser.textContent = currentUser;
+    tr.appendChild(tdUser);
 
-      if(!isAdmin && p !== currentUser){
-        select.disabled = true; // nur eigene Spalte aktiv
-      }
-
-      td.appendChild(select);
-      tr.appendChild(td);
+    const tdStatus = document.createElement("td");
+    const select = document.createElement("select");
+    ["", "Ja", "Nein", "Vielleicht"].forEach(o=>{
+      const opt = document.createElement("option");
+      opt.value = o; opt.text = o;
+      select.appendChild(opt);
     });
 
+    tdStatus.appendChild(select);
+    tr.appendChild(tdStatus);
+
     tbody.appendChild(tr);
-
-    // Nächster Mittwoch
-    date.setDate(date.getDate() + 7);
   }
-}
-
-// Beim Laden Nutzer prompt
-window.onload = function() {
-  let name = prompt("Gib deinen Namen ein:");
-  setUser(name);
 }
