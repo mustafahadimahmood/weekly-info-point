@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Info Point – Teilnahme Mittwoch 16:00 Uhr</title>
   <style>
     table, th, td {
@@ -13,15 +13,22 @@
     select:disabled {
       background-color: #eee;
     }
+    #msg {
+      color: red;
+    }
   </style>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </head>
 <body>
   <h1>Info Point – Teilnahme Mittwoch 16:00 Uhr</h1>
 
   <div id="login">
-    <label>Gib deinen Namen ein: <input type="text" id="userName" /></label>
+    <label>Gib deinen Namen ein: <input type="text" id="userName"></label>
     <button onclick="loginUser()">Login</button>
-    <p id="msg" style="color:red;"></p>
+    <p id="msg"></p>
   </div>
 
   <table id="voteTable" style="margin-top:20px; display:none;">
@@ -38,6 +45,22 @@
     </thead>
     <tbody></tbody>
   </table>
+
+  <script>
+    // === Firebase Konfiguration ===
+    const firebaseConfig = {
+      apiKey: "DEIN_API_KEY",
+      authDomain: "DEIN_PROJECT_ID.firebaseapp.com",
+      databaseURL: "https://DEIN_PROJECT_ID-default-rtdb.firebaseio.com",
+      projectId: "DEIN_PROJECT_ID",
+      storageBucket: "DEIN_PROJECT_ID.appspot.com",
+      messagingSenderId: "DEIN_SENDER_ID",
+      appId: "DEIN_APP_ID"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+  </script>
 
   <script src="script.js"></script>
 </body>
