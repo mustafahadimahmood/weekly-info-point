@@ -1,7 +1,10 @@
+// Teilnehmerliste
+const participants = ["Christa","Ruben","Mustafa","Theo","Cordula","Neli"];
+const adminName = "Mustafa";
+const adminPassword = "admin123"; // Passwort für Mustafa
+
+let isAdmin = false;
 let currentUser = "";
-let isAdmin = Mustafa;
-const adminPassword = "Wks07072023"; // Passwort für Mustafa
-let votes = []; // Liste der Einträge
 
 // Admin Login
 function loginAdmin() {
@@ -15,12 +18,14 @@ function loginAdmin() {
   }
 }
 
-// Benutzername setzen
-function setUser() {
-  const nameInput = document.getElementById("userName").value.trim();
-  if(nameInput === "") { alert("Gib einen Namen ein!"); return; }
-  currentUser = nameInput;
-  renderTable();
+// Benutzer setzen
+function setUser(name) {
+  if(participants.includes(name)){
+    currentUser = name;
+    renderTable();
+  } else {
+    alert("Name nicht in der Liste!");
+  }
 }
 
 // Nächster Mittwoch
@@ -35,10 +40,10 @@ function renderTable(){
   const tbody = document.querySelector("#voteTable tbody");
   tbody.innerHTML = "";
 
-  if(!currentUser && !isAdmin) return;
+  if(!currentUser && !isAdmin) return; // Benutzer nicht gesetzt
 
   const today = new Date();
-  for(let i=0;i<10;i++){
+  for(let i=0;i<10;i++){ // 10 Wochen anzeigen
     const date = getNextWednesday(new Date(today.getTime() + i*7*24*60*60*1000));
     const tr = document.createElement("tr");
 
@@ -46,21 +51,30 @@ function renderTable(){
     tdDate.textContent = date;
     tr.appendChild(tdDate);
 
-    const tdUser = document.createElement("td");
-    tdUser.textContent = currentUser;
-    tr.appendChild(tdUser);
+    participants.forEach(p => {
+      const td = document.createElement("td");
+      const select = document.createElement("select");
+      ["", "Ja", "Nein", "Vielleicht"].forEach(o=>{
+        const opt = document.createElement("option");
+        opt.value = o; opt.text = o;
+        select.appendChild(opt);
+      });
 
-    const tdStatus = document.createElement("td");
-    const select = document.createElement("select");
-    ["", "Ja", "Nein", "Vielleicht"].forEach(o=>{
-      const opt = document.createElement("option");
-      opt.value = o; opt.text = o;
-      select.appendChild(opt);
+      // Berechtigungen: nur eigene Spalte bearbeiten, außer Admin
+      if(!isAdmin && p !== currentUser){
+        select.disabled = true;
+      }
+
+      td.appendChild(select);
+      tr.appendChild(td);
     });
-
-    tdStatus.appendChild(select);
-    tr.appendChild(tdStatus);
 
     tbody.appendChild(tr);
   }
+}
+
+// Benutzername setzen über Prompt beim Laden
+window.onload = function() {
+  let name = prompt("Gib deinen Namen ein:");
+  setUser(name);
 }
