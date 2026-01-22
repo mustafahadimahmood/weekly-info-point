@@ -16,6 +16,12 @@
     #msg {
       color: red;
     }
+    #saveBtn {
+      margin-top: 20px;
+      padding: 10px 15px;
+      font-size: 16px;
+      display: block;
+    }
   </style>
 
   <!-- Firebase SDK -->
@@ -31,20 +37,25 @@
     <p id="msg"></p>
   </div>
 
-  <table id="voteTable" style="margin-top:20px; display:none;">
-    <thead>
-      <tr>
-        <th>Datum</th>
-        <th>Christa</th>
-        <th>Ruben</th>
-        <th>Mustafa (Admin)</th>
-        <th>Theo</th>
-        <th>Cordula</th>
-        <th>Neli</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+  <div id="tableContainer" style="display:none;">
+    <table id="voteTable" style="margin-top:20px;">
+      <thead>
+        <tr>
+          <th>Datum</th>
+          <th>Christa</th>
+          <th>Ruben</th>
+          <th>Mustafa (Admin)</th>
+          <th>Theo</th>
+          <th>Cordula</th>
+          <th>Neli</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <!-- Save-Button immer sichtbar unter der Tabelle -->
+    <button id="saveBtn" onclick="saveAll()">Save</button>
+  </div>
 
   <script>
     // === Firebase Konfiguration ===
