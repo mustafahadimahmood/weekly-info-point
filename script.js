@@ -1,6 +1,6 @@
 const participants = ["Christa","Ruben","Mustafa","Theo","Cordula","Neli"];
-const userPassword = "Wks07072023"; // Einmaliges Passwort für alle Teilnehmer
-const adminPassword = "Wks07072023"; // Admin Passwort (kann gleich sein)
+const userPassword = "123123"; // Einmaliges Passwort für alle Teilnehmer
+const adminPassword = "123123"; // Admin Passwort (kann gleich sein)
 let isAdmin = false;
 let currentUser = "";
 
@@ -91,5 +91,10 @@ function renderTable() {
     tbody.appendChild(tr);
     date.setDate(date.getDate() + 7);
   }
+}
 
-
+// Seite lädt und zeigt Login (keine automatische Tabelle)
+window.onload = function() {
+  // Tabelle wird erst nach Login gezeigt
+  document.getElementById("voteTable").style.display = "none";
+};
