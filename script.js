@@ -1,49 +1,22 @@
 const participants = ["Christa","Ruben","Mustafa","Theo","Cordula","Neli"];
-const userPassword = "123123"; // Einmaliges Passwort für alle Teilnehmer
-const adminPassword = "123123"; // Admin Passwort (kann gleich sein)
+const adminPassword = "Wks07072023"; // Admin-Passwort für Mustafa
 let isAdmin = false;
-let currentUser = "";
+let currentUser = ""; // leer, keine Anmeldung
 
-// Teilnehmer Login
-function loginUser() {
-  const nameInput = document.getElementById("userName").value.trim();
-  const passInput = document.getElementById("userPass").value;
-
-  // Name prüfen (case insensitive, mit Anpassung)
-  const nameNorm = nameInput.charAt(0).toUpperCase() + nameInput.slice(1).toLowerCase();
-
-  if(!participants.includes(nameNorm)){
-    document.getElementById("userMsg").textContent = "Name nicht in der Liste!";
-    return;
-  }
-  if(passInput !== userPassword){
-    document.getElementById("userMsg").textContent = "Falsches Passwort!";
-    return;
-  }
-
-  // Login erfolgreich
-  isAdmin = false;
-  currentUser = nameNorm;
-  document.getElementById("userMsg").textContent = "";
-  document.getElementById("user-login").style.display = "none";
-  document.getElementById("admin-login").style.display = "none";
-  renderTable();
-}
-
-// Admin Login
+// Admin Login bleibt, damit Mustafa sich einloggen kann
 function loginAdmin() {
   const pass = document.getElementById("adminPass").value;
   if(pass === adminPassword){
     isAdmin = true;
-    currentUser = "Mustafa";
-    document.getElementById("adminMsg").textContent = "";
-    document.getElementById("user-login").style.display = "none";
-    document.getElementById("admin-login").style.display = "none";
+    currentUser = "Mustafa"; // Admin ist Mustafa
+    document.getElementById("loginMsg").textContent = "Admin eingeloggt!";
     renderTable();
   } else {
-    document.getElementById("adminMsg").textContent = "Falsches Passwort!";
+    document.getElementById("loginMsg").textContent = "Falsches Passwort!";
   }
 }
+
+// Kein Benutzer setzen mehr – currentUser leer (keine Anmeldung)
 
 // Nächster Mittwoch berechnen
 function getNextWednesday(date = new Date()) {
@@ -53,20 +26,24 @@ function getNextWednesday(date = new Date()) {
 }
 
 // Tabelle rendern (52 Wochen)
-function renderTable() {
+function renderTable(){
   const tbody = document.querySelector("#voteTable tbody");
   tbody.innerHTML = "";
 
-  if(!currentUser) return;
+  // Wenn nicht Admin und kein aktueller User, setze currentUser leer (alle Spalten deaktiviert)
+  // Alternativ kann man jeden Namen für demo anzeigen, hier deaktivieren wir alles
+  if(!isAdmin && !currentUser) {
+    // Wir setzen currentUser leer und alle Dropdowns deaktiviert
+  }
 
   const today = new Date();
   let date = getNextWednesday(today);
 
-  for(let i = 0; i < 52; i++) {
+  for(let i=0; i<52; i++){ // 52 Wochen
     const tr = document.createElement("tr");
 
     const tdDate = document.createElement("td");
-    tdDate.textContent = date.toISOString().split("T")[0];
+    tdDate.textContent = date.toISOString().split('T')[0];
     tr.appendChild(tdDate);
 
     participants.forEach(p => {
@@ -74,13 +51,13 @@ function renderTable() {
       const select = document.createElement("select");
       ["", "Ja", "Nein", "Vielleicht"].forEach(o => {
         const opt = document.createElement("option");
-        opt.value = o;
-        opt.text = o;
+        opt.value = o; opt.text = o;
         select.appendChild(opt);
       });
 
-      // Nur Admin kann alle bearbeiten, sonst nur eigene Spalte
-      if(!isAdmin && p !== currentUser){
+      // Nur Admin (Mustafa) kann alles bearbeiten
+      // Alle anderen Spalten sind deaktiviert (da kein User-Login)
+      if(!isAdmin){
         select.disabled = true;
       }
 
@@ -89,12 +66,14 @@ function renderTable() {
     });
 
     tbody.appendChild(tr);
+
+    // Nächster Mittwoch
     date.setDate(date.getDate() + 7);
   }
 }
 
-// Seite lädt und zeigt Login (keine automatische Tabelle)
+// Seite lädt und rendert direkt ohne Popup
 window.onload = function() {
-  // Tabelle wird erst nach Login gezeigt
-  document.getElementById("voteTable").style.display = "none";
-};
+  // Kein prompt mehr, einfach Tabelle rendern
+  renderTable();
+}
