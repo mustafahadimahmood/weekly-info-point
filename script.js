@@ -1,55 +1,57 @@
 const participants = ["Christa","Ruben","Mustafa","Theo","Cordula","Neli"];
+let currentUser = "";
 const adminName = "Mustafa";
-const adminPassword = "Wks07072023"; // Mustafa Passwort
-let isAdmin = false;
 
-// Login als Admin
-function loginAdmin() {
-  const pass = document.getElementById("adminPass").value;
-  if(pass === adminPassword){
-    isAdmin = true;
-    document.getElementById("loginMsg").textContent = "Admin eingeloggt!";
-    renderTable();
-  } else {
-    document.getElementById("loginMsg").textContent = "Falsches Passwort!";
+function loginUser() {
+  const input = document.getElementById("userName").value.trim();
+  const name = input.charAt(0).toUpperCase() + input.slice(1).toLowerCase();
+
+  if (!participants.includes(name)) {
+    document.getElementById("msg").textContent = "Name nicht in der Liste!";
+    return;
   }
+
+  currentUser = name;
+  document.getElementById("msg").textContent = "";
+  document.getElementById("login").style.display = "none";
+  document.getElementById("voteTable").style.display = "table";
+
+  renderTable();
 }
 
-// Nächster Mittwoch
 function getNextWednesday(date = new Date()) {
   const nextWed = new Date(date);
   nextWed.setDate(date.getDate() + ((3 - date.getDay() + 7) % 7 || 7));
-  return nextWed.toISOString().split('T')[0];
+  return nextWed;
 }
 
-// Render Tabelle
-function renderTable(){
+function renderTable() {
   const tbody = document.querySelector("#voteTable tbody");
   tbody.innerHTML = "";
 
-  const today = new Date();
-  for(let i=0;i<10;i++){ // 10 Wochen anzeigen
-    const date = getNextWednesday(new Date(today.getTime() + i*7*24*60*60*1000));
+  let date = getNextWednesday();
+
+  for(let i = 0; i < 52; i++) {
     const tr = document.createElement("tr");
 
     const tdDate = document.createElement("td");
-    tdDate.textContent = date;
+    tdDate.textContent = date.toISOString().split("T")[0];
     tr.appendChild(tdDate);
 
     participants.forEach(p => {
       const td = document.createElement("td");
       const select = document.createElement("select");
 
-      ["", "Ja", "Nein", "Vielleicht"].forEach(o=>{
+      ["", "Ja", "Nein", "Vielleicht"].forEach(option => {
         const opt = document.createElement("option");
-        opt.value = o;
-        opt.text = o;
+        opt.value = option;
+        opt.text = option;
         select.appendChild(opt);
       });
 
-      // Wenn kein Admin und nicht eigene Spalte → deaktivieren
-      const username = prompt("Gib deinen Namen ein:"); // einfacher Name-Check
-      if(!isAdmin && p !== username){
+      // Nur Mustafa (Admin) kann alle Spalten bearbeiten
+      // Andere Teilnehmer nur ihre eigene Spalte
+      if(currentUser !== adminName && p !== currentUser) {
         select.disabled = true;
       }
 
@@ -58,8 +60,6 @@ function renderTable(){
     });
 
     tbody.appendChild(tr);
+    date.setDate(date.getDate() + 7);
   }
 }
-
-// Tabelle initial rendern
-renderTable();
