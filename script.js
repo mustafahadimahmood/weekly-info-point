@@ -91,17 +91,5 @@ function renderTable() {
     tbody.appendChild(tr);
     date.setDate(date.getDate() + 7);
   }
-}
 
-// Seite lädt und zeigt Login (keine automatische Tabelle)
-window.onload = function() {
-  // Tabelle wird erst nach Login gezeigt
-  document.getElementById("voteTable").style.display = "none";
-  function renderTable() {
-  // ... bisheriger Code ...
-
-  document.getElementById("voteTable").style.display = "table";
-}
-
-};
 
